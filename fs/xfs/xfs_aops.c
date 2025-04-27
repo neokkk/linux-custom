@@ -471,9 +471,12 @@ xfs_vm_writepages(
 	struct address_space	*mapping,
 	struct writeback_control *wbc)
 {
+	struct inode *inode = mapping->host;
 	struct xfs_writepage_ctx wpc = { };
 
-	xfs_iflags_clear(XFS_I(mapping->host), XFS_ITRUNCATED);
+	pr_info("xfs_vm_writepages; hint: %d\n", inode->i_write_hint);
+
+	xfs_iflags_clear(XFS_I(inode), XFS_ITRUNCATED);
 	return iomap_writepages(mapping, wbc, &wpc.ctx, &xfs_writeback_ops);
 }
 

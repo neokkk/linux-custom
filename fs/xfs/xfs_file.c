@@ -778,6 +778,7 @@ xfs_file_buffered_write(
 	bool			cleared_space = false;
 	unsigned int		iolock;
 
+	pr_info("xfs_file_buffered_write; hint: %d\n", inode->i_write_hint);
 write_retry:
 	iolock = XFS_IOLOCK_EXCL;
 	ret = xfs_ilock_iocb(iocb, iolock);
