@@ -663,12 +663,6 @@ EXPORT_SYMBOL(kernel_write);
 ssize_t vfs_write(struct file *file, const char __user *buf, size_t count, loff_t *pos)
 {
 	ssize_t ret;
-	uint32_t hint;
-
-	hint = file->f_inode->i_write_hint;
-	if (hint > 0) {
-		pr_info("vfs_write; hint: %d\n", file->f_inode->i_write_hint);
-	}
 
 	if (!(file->f_mode & FMODE_WRITE))
 		return -EBADF;
