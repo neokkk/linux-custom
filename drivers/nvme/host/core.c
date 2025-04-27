@@ -976,6 +976,7 @@ static inline blk_status_t nvme_setup_rw(struct nvme_ns *ns,
 {
 	u16 control = 0;
 	u32 dsmgmt = 0;
+	u32 bio_write_hint = req->bio->bi_write_hint;
 
 	if (req->cmd_flags & REQ_FUA)
 		control |= NVME_RW_FUA;
@@ -987,6 +988,11 @@ static inline blk_status_t nvme_setup_rw(struct nvme_ns *ns,
 
 	if (req->cmd_flags & REQ_ATOMIC && !nvme_valid_atomic_write(req))
 		return BLK_STS_INVAL;
+
+	//> nk
+	if (bio_write_hint != 0) {
+		dsmgmt |= (bio_write_hint << 16);
+	}
 
 	cmnd->rw.opcode = op;
 	cmnd->rw.flags = 0;
