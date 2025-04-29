@@ -837,10 +837,14 @@ xfs_file_write_iter(
 	struct kiocb		*iocb,
 	struct iov_iter		*from)
 {
-	struct inode		*inode = iocb->ki_filp->f_mapping->host;
+	struct file *file = iocb->ki_filp;
+	struct path *path = &file->path;
+	struct dentry *dentry = path->dentry;
+	struct inode		*inode = file->f_mapping->host;
 	struct xfs_inode	*ip = XFS_I(inode);
 	ssize_t			ret;
 	size_t			ocount = iov_iter_count(from);
+	int ret, hint = 0;
 
 	XFS_STATS_INC(ip->i_mount, xs_write_calls);
 
@@ -849,6 +853,12 @@ xfs_file_write_iter(
 
 	if (xfs_is_shutdown(ip->i_mount))
 		return -EIO;
+
+	ret = kstrtoint(dentry->d_parent->d_name.name, 10, &hint);
+	if (ret == 0) {
+		pr_info("xfs_file_write_iter; dirname: %s, hint: %d\n", dentry->d_parent->d_name.name, hint);
+		inode->i_write_hint = hint;
+	}
 
 	if (IS_DAX(inode))
 		return xfs_file_dax_write(iocb, from);
