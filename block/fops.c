@@ -675,16 +675,16 @@ static ssize_t blkdev_buffered_write(struct kiocb *iocb, struct iov_iter *from)
 static ssize_t blkdev_write_iter(struct kiocb *iocb, struct iov_iter *from)
 {
 	struct file *file = iocb->ki_filp;
-	struct path *path = &file->f_path;
-	struct dentry *parent;
+	//struct path *path = &file->f_path;
+	//struct dentry *parent;
 	struct inode *bd_inode = bdev_file_inode(file);
 	struct block_device *bdev = I_BDEV(bd_inode);
 	bool atomic = iocb->ki_flags & IOCB_ATOMIC;
 	loff_t size = bdev_nr_bytes(bdev);
 	size_t shorted = 0;
 	ssize_t ret;
-	const char *diename;
-	int hint = 0;
+	//const char *dirname;
+	//int hint = 0;
 
 	if (bdev_read_only(bdev))
 		return -EPERM;
@@ -708,17 +708,17 @@ static ssize_t blkdev_write_iter(struct kiocb *iocb, struct iov_iter *from)
 	}
 
 	//> nk
-	parent = path->dentry->d_parent;
+	// parent = path->dentry->d_parent;
 
-	if (parent && parent->d_name.name) {
-		dirname = parent->d_name.name;
-		ret = kstrtoint(dirname, 10, &hint);
-		if (ret != 0) {
-			hint = 0;
-		}
-		pr_info("dirname: %s, hint: %d\n", dirname, hint);
-		inode->i_write_hint = hint;
-	}
+	// if (parent && parent->d_name.name) {
+	//	dirname = parent->d_name.name;
+	//	ret = kstrtoint(dirname, 10, &hint);
+	//	if (ret != 0) {
+	//		hint = 0;
+	//	}
+	//	pr_info("dirname: %s, hint: %d\n", dirname, hint);
+	//	bd_inode->i_write_hint = hint;
+	//}
 
 	size -= iocb->ki_pos;
 	if (iov_iter_count(from) > size) {
