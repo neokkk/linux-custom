@@ -838,13 +838,13 @@ xfs_file_write_iter(
 	struct iov_iter		*from)
 {
 	struct file *file = iocb->ki_filp;
-	struct path *path = &file->path;
+	struct path *path = &file->f_path;
 	struct dentry *dentry = path->dentry;
 	struct inode		*inode = file->f_mapping->host;
 	struct xfs_inode	*ip = XFS_I(inode);
 	ssize_t			ret;
 	size_t			ocount = iov_iter_count(from);
-	int ret, hint = 0;
+	int hint = 0;
 
 	XFS_STATS_INC(ip->i_mount, xs_write_calls);
 
